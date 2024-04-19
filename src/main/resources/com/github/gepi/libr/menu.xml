@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<menu-config xmlns="http://jmix.io/schema/ui/menu">
+
+    <menu id="application" caption="msg://com.github.gepi.libr/menu.application" insertBefore="administration">
+        <item screen="User.browse" caption="msg://com.github.gepi.libr.screen.user/UserBrowse.caption"/>
+        <item id="BookTags" screen="BookTags" caption="msg://com.github.gepi.libr.screen.bookbytag/bookBrowser.caption"/>
+        <item id="Book.browse" screen="Book.browse" caption="msg://com.github.gepi.libr.screen.book/bookBrowse.menu"/>
+        <item id="Author.browse" screen="Author.browse" caption="msg://com.github.gepi.libr.screen.author/authorBrowse.menu"/>
+    </menu>
+
+</menu-config>

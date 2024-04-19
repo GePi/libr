@@ -1,0 +1,24 @@
+@import "../hover/hover";
+
+@mixin silence {
+  @include hover;
+
+  .my-icon .v-icon {
+    width: 16px;
+    height: 16px;
+  }
+  .my-imgicon {
+    width: 16px;
+    height: 16px;
+    vertical-align: text-top;
+  }
+  .col-border {
+    border: 1px solid #b5b5b5;
+    padding-top: 10px;
+    padding-bottom: 10px;
+    box-sizing: border-box;
+  }
+  .my-overflow-x-hidden {
+    overflow-x: hidden;
+  }
+}

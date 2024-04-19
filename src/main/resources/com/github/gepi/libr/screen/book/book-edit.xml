@@ -1,0 +1,165 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<window xmlns="http://jmix.io/schema/ui/window"
+        caption="msg://bookEdit.caption"
+        focusComponent="form">
+    <data>
+        <instance id="bookDc"
+                  class="com.github.gepi.libr.entity.Book">
+            <fetchPlan extends="_base"/>
+            <loader/>
+        </instance>
+
+        <collection id="bookAuthorDc" class="com.github.gepi.libr.entity.BookAuthors">
+            <fetchPlan extends="_base"/>
+            <loader id="bookAuthorLoader">
+                <query>
+                    <![CDATA[select e from BookAuthors e where e.book = :container_bookDc]]>
+                </query>
+            </loader>
+        </collection>
+
+        <collection id="schemeDc" class="com.github.gepi.libr.entity.TagScheme" fetchPlan="_base">
+            <loader id="schemeLoader">
+                <query>
+                    <![CDATA[select e from TagScheme e where e.owner = :owner1]]>
+                </query>
+            </loader>
+        </collection>
+        <collection id="tagDc" class="com.github.gepi.libr.entity.Tag" fetchPlan="_base">
+        </collection>
+        <collection id="bookTagsDc" class="com.github.gepi.libr.entity.BookTags">
+            <fetchPlan extends="_base">
+                <property name="tag" fetchPlan="_base"/>
+            </fetchPlan>
+            <loader id="bookTagsLoader">
+                <query>
+                    <![CDATA[select e from BookTags e where e.book = :container_bookDc]]>
+                </query>
+            </loader>
+        </collection>
+        <keyValueCollection id="infoSchemeTagsDc">
+            <properties>
+                <property name="scheme" class="com.github.gepi.libr.entity.TagScheme"/>
+                <property name="tagList" class="com.github.gepi.libr.app.MyList"/>
+            </properties>
+            <loader id="infoSchemeTagsLoader"/>
+        </keyValueCollection>
+    </data>
+    <facets>
+        <dataLoadCoordinator auto="true"/>
+        <screenSettings id="settingsFacet" auto="true"/>
+    </facets>
+    <actions>
+        <action id="windowCommitAndClose" caption="msg:///actions.Ok"
+                icon="EDITOR_OK"
+                primary="true"
+                shortcut="${COMMIT_SHORTCUT}"/>
+        <action id="windowClose"
+                caption="msg:///actions.Close"
+                icon="EDITOR_CANCEL"/>
+    </actions>
+
+    <dialogMode height="AUTO"
+                width="800px"
+                modal="true"
+                forceDialog="true"/>
+
+    <layout spacing="true">
+        <tabSheet height="470px">
+            <tab id="tab1"
+                 caption="Основные данные"
+                 margin="true"
+                 spacing="true">
+                <vbox width="100%" spacing="true">
+                    <groupBox caption="msg://title" width="100%">
+                        <form id="form" dataContainer="bookDc">
+                            <column>
+                                <textField id="titleRuField" property="titleRu"/>
+                                <textField id="titleEnField" property="titleEn"/>
+                            </column>
+                        </form>
+                    </groupBox>
+                    <groupBox caption="msg://files" width="100%">
+                        <hbox spacing="true">
+                            <label value="msg://labelFileNameRu" align="MIDDLE_LEFT"/>
+                            <hbox>
+                                <textField id="fileNameRu" property="fileNameRu" dataContainer="bookDc"/>
+                                <fileUpload id="fileRu"/>
+                                <button id="deleteFileRu" icon="font-icon:REMOVE"/>
+                            </hbox>
+                        </hbox>
+                        <linkButton id="downloadFileRu" icon="font-icon:DOWNLOAD" caption="msg://downloadTextPrefix"/>
+
+                        <hbox spacing="true">
+                            <label value="msg://labelFileNameEn" align="MIDDLE_LEFT"/>
+                            <hbox>
+                                <textField id="fileNameEn" property="fileNameEn" dataContainer="bookDc"/>
+                                <fileUpload id="fileEn"/>
+                                <button id="deleteFileEn" icon="font-icon:REMOVE"/>
+                            </hbox>
+                        </hbox>
+                        <linkButton id="downloadFileEn" icon="font-icon:DOWNLOAD" caption="msg://downloadTextPrefix"/>
+                    </groupBox>
+                    <groupBox caption="msg://formAuthors" expand="authorsTable" width="100%">
+                        <table id="authorsTable" dataContainer="bookAuthorDc" width="100%">
+                            <actions>
+                                <action id="addLine" caption="msg://addBookAuthor"/>
+                                <action id="removeLine" caption="msg://removeBookAuthor"/>
+                            </actions>
+                            <buttonsPanel>
+                                <button action="authorsTable.addLine"/>
+                                <button action="authorsTable.removeLine"/>
+                            </buttonsPanel>
+                            <columns>
+                                <column id="author.nameRu"/>
+                                <column id="author.nameEn"/>
+                            </columns>
+                        </table>
+                    </groupBox>
+                </vbox>
+            </tab>
+            <tab id="tab2"
+                 caption="Присвоение тегов"
+                 margin="true"
+                 spacing="true">
+                <responsiveGridLayout>
+                    <row>
+                        <col stylename="col-border">
+                            <vbox width="100%">
+                                <entitySuggestionField id="schemeField"
+                                                       inputPrompt="Выберете схему"
+                                                       metaClass="TagScheme" width="100%">
+                                    <actions>
+                                        <action id="lookup" type="entity_lookup"/>
+                                        <action id="open" type="entity_open"/>
+                                    </actions>
+                                </entitySuggestionField>
+                                <tagPicker id="tagsPicker"
+                                           metaClass="Tag"
+                                           optionsContainer="tagDc" width="80%">
+                                    <actions>
+                                        <action id="lookup" type="tag_lookup"/>
+                                        <action id="clear" type="value_clear"/>
+                                    </actions>
+                                </tagPicker>
+                            </vbox>
+                        </col>
+                        <col xs="6" stylename="col-border">
+                            <table id="infoSchemeTags" dataContainer="infoSchemeTagsDc" width="100%"
+                                   showSelection="false"
+                                   stylename="no-header no-vertical-lines no-horizontal-lines no-stripes borderless">
+                                <columns>
+                                    <column id="tagList"/>
+                                </columns>
+                            </table>
+                        </col>
+                    </row>
+                </responsiveGridLayout>
+            </tab>
+        </tabSheet>
+        <hbox id="editActions" spacing="true">
+            <button id="commitAndCloseBtn" action="windowCommitAndClose"/>
+            <button id="closeBtn" action="windowClose"/>
+        </hbox>
+    </layout>
+</window>

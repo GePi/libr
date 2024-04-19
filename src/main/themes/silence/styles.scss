@@ -1,0 +1,6 @@
+@import "silence-defaults";
+@import "silence";
+
+.silence {
+  @include silence;
+}

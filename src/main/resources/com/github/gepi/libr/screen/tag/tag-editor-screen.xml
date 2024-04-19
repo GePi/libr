@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<window xmlns="http://jmix.io/schema/ui/window"
+        caption="msg://tagEditorScreen.caption">
+
+    <data>
+        <instance id="tagDc" class="com.github.gepi.libr.entity.Tag">
+            <fetchPlan extends="_base"/>
+            <loader id="tagDl"/>
+        </instance>
+        <instance id="tagHierarchyDc" class="com.github.gepi.libr.entity.TagHierarchy">
+            <fetchPlan extends="_base">
+                <property name="scheme" fetchPlan="_base"/>
+                <property name="tag" fetchPlan="_base"/>
+                <property name="parent" fetchPlan="_base"/>
+            </fetchPlan>
+            <loader id="tagHierarchyDl">
+                <query>
+                    <![CDATA[select e from TagHierarchy e where e.tag = :tag1  ]]>
+                </query>
+            </loader>
+        </instance>
+    </data>
+    <actions>
+        <action id="windowCommitAndClose" caption="msg:///actions.Ok"
+                icon="EDITOR_OK"
+                primary="true"
+                shortcut="${COMMIT_SHORTCUT}"/>
+        <action id="windowClose"
+                caption="msg:///actions.Close"
+                icon="EDITOR_CANCEL"/>
+    </actions>
+    <facets>
+        <optionDialog id="optionDialog"/>
+    </facets>
+    <dialogMode height="AUTO"
+                width="AUTO"
+                modal="true"
+                forceDialog="true"/>
+    <layout>
+        <vbox spacing="true" margin="true" width="100%">
+            <gridLayout spacing="true" width="AUTO">
+                <columns count="2"/>
+                <rows>
+                    <row>
+                        <textField id="tagTitle" dataContainer="tagDc" property="title"/>
+                        <entityPicker id="tagParent" dataContainer="tagHierarchyDc" property="parent">
+                            <actions>
+                                <action id="treeLookup" icon="font-icon:TREE"/>
+                                <action id="rootLink" icon="font-icon:ASTERISK"/>
+                            </actions>
+                        </entityPicker>
+                    </row>
+                </rows>
+            </gridLayout>
+            <hbox id="editActions" spacing="true">
+                <button id="commitAndCloseBtn" action="windowCommitAndClose"/>
+                <button id="closeBtn" action="windowClose"/>
+            </hbox>
+        </vbox>
+    </layout>
+</window>

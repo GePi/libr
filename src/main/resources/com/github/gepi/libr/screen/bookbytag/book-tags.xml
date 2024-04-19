@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<window xmlns="http://jmix.io/schema/ui/window"
+        xmlns:c="http://jmix.io/schema/ui/jpql-condition"
+        caption="msg://bookBrowser.caption">
+    <data>
+        <collection id="tagSchemesDc" class="com.github.gepi.libr.entity.TagScheme">
+            <fetchPlan extends="_base"/>
+            <loader id="tagSchemesDl">
+                <query>
+                    <![CDATA[select e from TagScheme e]]>
+                    <condition>
+                        <c:jpql>
+                            <c:where>e.owner = :owner</c:where>
+                        </c:jpql>
+                    </condition>
+                </query>
+            </loader>
+        </collection>
+        <collection id="tagTreeDTODc" class="com.github.gepi.libr.entity.TagTreeDTO"/>
+    </data>
+    <actions>
+        <action id="SchemeEditScreen"/>
+        <action id="SchemeNewScreen"/>
+        <action id="SchemeDelete"/>
+    </actions>
+    <layout>
+        <hbox spacing="true" height="100%">
+            <vbox spacing="true" height="100%" expand="tagTreeDataGrid">
+                <hbox spacing="false">
+                    <entityComboBox id="cbSchemeId" optionsContainer="tagSchemesDc" property="title"/>
+                    <button icon="EDIT_ACTION" action="SchemeEditScreen"/>
+                    <button icon="REMOVE_ACTION" action="SchemeDelete"/>
+                    <button icon="CREATE_ACTION" action="SchemeNewScreen"/>
+                    <button id="modeBtn" stylename="my-icon"/>
+                </hbox>
+                <treeDataGrid id="tagTreeDataGrid" hierarchyProperty="parent"
+                              dataContainer="tagTreeDTODc" width="470px">
+                    <actions>
+                        <action id="addTagAction" caption="Добавить тег"/>
+                        <action id="editTagAction" caption="Редактировать тег"/>
+                        <action id="delTagAction" caption="Удалить тег"/>
+                    </actions>
+                    <columns>
+                        <column id="tag" property="tag.title"/>
+                    </columns>
+                </treeDataGrid>
+                <buttonsPanel id="buttonsPanel"
+                              alwaysVisible="true" spacing="true" align="MIDDLE_CENTER">
+                    <button id="addTag" icon="ADD_ACTION" caption="Добавить" action="tagTreeDataGrid.addTagAction"/>
+                    <button id="editTag" icon="EDIT_ACTION" caption="Редактировать"
+                            action="tagTreeDataGrid.editTagAction"/>
+                    <button id="delTag" icon="REMOVE_ACTION" caption="Удалить"
+                            action="tagTreeDataGrid.delTagAction"/>
+                </buttonsPanel>
+            </vbox>
+            <fragment screen="BookFragment" id="bookFragment" height="100%" width="1100px"/>
+        </hbox>
+    </layout>
+</window>

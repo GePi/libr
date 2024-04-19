@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                      http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.11.xsd"
+        objectQuotingStrategy="QUOTE_ONLY_RESERVED_WORDS">
+    <changeSet id="1" author="libr">
+        <dropForeignKeyConstraint baseTableName="BOOK_AUTHORS" constraintName="FK_BOOK_AUTHORS_ON_AUTHOR"/>
+    </changeSet>
+    <changeSet id="2" author="libr">
+        <dropForeignKeyConstraint baseTableName="BOOK_AUTHORS" constraintName="FK_BOOK_AUTHORS_ON_BOOK"/>
+    </changeSet>
+    <changeSet id="3" author="libr">
+        <addForeignKeyConstraint baseColumnNames="AUTHOR_ID" baseTableName="BOOK_AUTHORS"
+                                 constraintName="FK_BOOK_AUTHORS_ON_AUTHOR" referencedColumnNames="ID"
+                                 referencedTableName="AUTHOR"/>
+    </changeSet>
+    <changeSet id="4" author="libr">
+        <addForeignKeyConstraint baseColumnNames="BOOK_ID" baseTableName="BOOK_AUTHORS"
+                                 constraintName="FK_BOOK_AUTHORS_ON_BOOK" referencedColumnNames="ID"
+                                 referencedTableName="BOOK"/>
+    </changeSet>
+</databaseChangeLog>

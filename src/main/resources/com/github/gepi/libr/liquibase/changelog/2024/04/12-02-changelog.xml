@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                      http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.11.xsd"
+        objectQuotingStrategy="QUOTE_ONLY_RESERVED_WORDS">
+    <changeSet id="20240412-02-01" author="Filippov_A (generated)">
+        <dropForeignKeyConstraint baseTableName="tag" constraintName="fk_tag_on_scheme"/>
+    </changeSet>
+    <changeSet id="20240412-02-02" author="Filippov_A (generated)">
+        <addForeignKeyConstraint baseColumnNames="scheme_id" baseTableName="tag" constraintName="fk_tag_on_scheme"
+                                 referencedColumnNames="id" referencedTableName="tag_scheme" deleteCascade="true"/>
+    </changeSet>
+</databaseChangeLog>

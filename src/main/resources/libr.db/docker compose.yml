@@ -1,0 +1,53 @@
+version: "1.0"
+services:
+  postgree:
+    container_name: postgres_libr
+    image: postgres:16-alpine3.18
+    environment:
+      POSTGRES_DB: "libarragement"
+      POSTGRES_USER: "libuser"
+      POSTGRES_PASSWORD: "111111"
+      PGDATA: "/var/lib/postgresql/data/pgdata"
+    volumes:
+      - libarragement-data:/var/lib/postgresql/data
+    ports:
+      - "10500:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U libuser -d libarragement"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
+    restart: unless-stopped
+    deploy:
+      resources:
+        limits:
+          cpus: '1'
+          memory: 2G
+    networks:
+        - postgres
+  pgadmin:
+    container_name: pgadmin_libr
+    image: dpage/pgadmin4:7.8
+    environment:
+      PGADMIN_DEFAULT_EMAIL: "gentle.pilgrim@gmail.com"
+      PGADMIN_DEFAULT_PASSWORD: "111111"
+      PGADMIN_CONFIG_SERVER_MODE: "False"
+    volumes:
+      - pgadmin-data:/var/lib/pgadmin
+    ports:
+      - "60100:80"
+    restart: unless-stopped
+    deploy:
+      resources:
+        limits:
+          cpus: '0.5'
+          memory: 1G
+    networks:
+      - postgres
+volumes:
+  libarragement-data:
+  pgadmin-data:
+networks:
+  postgres:
+    driver: bridge

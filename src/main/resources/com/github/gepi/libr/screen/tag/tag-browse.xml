@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<window xmlns="http://jmix.io/schema/ui/window"
+        caption="msg://tagBrowse.caption"
+        focusComponent="tagsTree">
+    <data readOnly="true">
+        <collection id="tagsDc"
+                    class="com.github.gepi.libr.entity.TagTreeDTO">
+            <fetchPlan extends="_base"/>
+            <loader id="tagsDl"/>
+        </collection>
+    </data>
+    <dialogMode forceDialog="true"
+                resizable="true"
+                width="460"
+                height="theme://jmix.ui.filter.addConditionScreen.dialog.height"/>
+    <facets>
+        <dataLoadCoordinator auto="true"/>
+    </facets>
+
+    <actions>
+        <action id="lookupSelectAction"
+                caption="msg://tagBrowse.select"
+                icon="LOOKUP_OK"
+                primary="true"
+                shortcut="${COMMIT_SHORTCUT}"/>
+        <action id="lookupCancelAction"
+                caption="msg://tagBrowse.cancel"
+                icon="LOOKUP_CANCEL"/>
+    </actions>
+
+    <layout expand="tagsTree" spacing="true">
+        <hbox>
+            <textField id="searchTagField"
+                       inputPrompt="msg://tagBrowse.inputPromt"
+                       width="100%"/>
+            <button id="gotoNextBtn" icon="ARROW_CIRCLE_O_UP"/>
+            <button id="gotoPrevBtn" icon="ARROW_CIRCLE_O_DOWN"/>
+            <button id="collapseBtn" icon="font-icon:LEVEL_UP"/>
+        </hbox>
+        <tree id="tagsTree"
+              dataContainer="tagsDc"
+              hierarchyProperty="parent"
+              captionProperty="tag.title"
+              width="100%">
+        </tree>
+        <hbox id="lookupActions" spacing="true" visible="false">
+            <button action="lookupSelectAction"/>
+            <button action="lookupCancelAction"/>
+        </hbox>
+    </layout>
+</window>

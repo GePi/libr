@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<window xmlns="http://jmix.io/schema/ui/window"
+        xmlns:c="http://jmix.io/schema/ui/jpql-condition"
+        caption="msg://bookBrowse.caption"
+        focusComponent="booksTable">
+    <data readOnly="true">
+        <collection id="booksDc"
+                    class="com.github.gepi.libr.entity.Book">
+            <fetchPlan extends="_base">
+                <property name="bookAuthors" fetchPlan="_base">
+                    <property name="author" fetchPlan="_base"/>
+                </property>
+            </fetchPlan>
+            <loader id="booksDl">
+                <query>
+                    <![CDATA[select b from Book b ]]>
+                    <condition>
+                        <c:jpql>
+                            <c:where>b.owner.id = :current_user_id</c:where>
+                        </c:jpql>
+                    </condition>
+                </query>
+            </loader>
+        </collection>
+    </data>
+    <facets>
+        <dataLoadCoordinator auto="true"/>
+        <screenSettings id="settingsFacet" auto="true"/>
+    </facets>
+    <actions>
+        <action id="lookupSelectAction"
+                caption="msg:///actions.Select"
+                icon="LOOKUP_OK"
+                primary="true"
+                shortcut="${COMMIT_SHORTCUT}"/>
+        <action id="lookupCancelAction"
+                caption="msg:///actions.Cancel"
+                icon="LOOKUP_CANCEL"/>
+    </actions>
+    <dialogMode height="600"
+                width="800"/>
+    <layout expand="booksTable" spacing="true">
+        <filter id="filter"
+                dataLoader="booksDl">
+            <properties include=".*"
+                        exclude="(owner)"
+                        excludeProperties="id,version"
+                        excludeRecursively="true"/>
+            <conditions>
+                <jpqlFilter parameterClass="com.github.gepi.libr.entity.Author" icon="LEAF" caption="По автору">
+                    <condition>
+                        <c:jpql>
+                            <c:join>inner join BookAuthors bu on b = bu.book</c:join>
+                            <c:where>bu.author.id = ? AND b.owner.id = :current_user_id</c:where>
+                        </c:jpql>
+                    </condition>
+                </jpqlFilter>
+
+                <jpqlFilter parameterClass="java.lang.String" icon="LEAF" caption="По имени автора">
+                    <condition>
+                        <c:jpql>
+                            <c:join>inner join BookAuthors bu on b = bu.book</c:join>
+                            <c:where>( bu.author.nameRu like ? OR bu.author.nameEn like ? ) AND b.owner.id = :current_user_id
+                            </c:where>
+                        </c:jpql>
+                    </condition>
+                </jpqlFilter>
+            </conditions>
+
+        </filter>
+        <groupTable id="booksTable"
+                    width="100%"
+                    dataContainer="booksDc">
+            <actions>
+                <action id="create" type="create"/>
+                <action id="edit" type="edit"/>
+                <action id="remove" type="remove"/>
+            </actions>
+            <columns>
+                <column id="titleRu"/>
+                <column id="titleEn"/>
+                <column id="authors" caption="Авторы" link="true"/>
+            </columns>
+            <simplePagination/>
+            <buttonsPanel id="buttonsPanel"
+                          alwaysVisible="true">
+                <button id="createBtn" action="booksTable.create"/>
+                <button id="editBtn" action="booksTable.edit"/>
+                <button id="removeBtn" action="booksTable.remove"/>
+            </buttonsPanel>
+        </groupTable>
+        <hbox id="lookupActions" spacing="true" visible="false">
+            <button action="lookupSelectAction"/>
+            <button action="lookupCancelAction"/>
+        </hbox>
+    </layout>
+</window>

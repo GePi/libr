@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                      http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.11.xsd"
+        objectQuotingStrategy="QUOTE_ONLY_RESERVED_WORDS">
+    <changeSet id="20240417-01-01" author="Kozodoy_SV">
+        <createTable tableName="persistent_logins">
+            <column name="series" type="varchar(64)">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="username" type="varchar(64)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="token" type="varchar(64)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="last_used" type="timestamp">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet id="20240417-01-02" author="Kozodoy_SV">
+        <dropForeignKeyConstraint baseTableName="book_authors" constraintName="fk_book_authors_on_author"/>
+    </changeSet>
+    <changeSet id="20240412-02-03" author="Kozodoy_SV">
+        <addForeignKeyConstraint baseColumnNames="AUTHOR_ID" baseTableName="book_authors" constraintName="fk_book_authors_on_author"
+                                 referencedColumnNames="id" referencedTableName="author" deleteCascade="true"/>
+    </changeSet>
+    <changeSet id="20240417-01-04" author="Kozodoy_SV">
+        <dropForeignKeyConstraint baseTableName="book_authors" constraintName="fk_book_authors_on_book"/>
+    </changeSet>
+    <changeSet id="20240412-02-05" author="Kozodoy_SV">
+        <addForeignKeyConstraint baseColumnNames="book_id" baseTableName="book_authors" constraintName="fk_book_authors_on_book"
+                                 referencedColumnNames="id" referencedTableName="book" deleteCascade="true"/>
+    </changeSet>
+
+</databaseChangeLog>

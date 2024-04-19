@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<fragment xmlns="http://jmix.io/schema/ui/fragment"
+          xmlns:c="http://jmix.io/schema/ui/jpql-condition">
+    <data>
+        <collection id="booksDc"
+                    class="com.github.gepi.libr.entity.Book">
+            <fetchPlan extends="_base">
+                <property name="bookAuthors" fetchPlan="_base">
+                    <property name="author" fetchPlan="_base"/>
+                </property>
+            </fetchPlan>
+            <loader id="booksDl">
+                <query>
+                    <![CDATA[select distinct e from Book e]]>
+                <condition>
+                    <c:jpql>
+                        <c:where>e.owner.id = :current_user_id</c:where>
+                    </c:jpql>
+                </condition>
+                </query>
+            </loader>
+            <collection id="bookAuthors" property="bookAuthors"/>
+        </collection>
+    </data>
+    <facets>
+        <dataLoadCoordinator auto="true"/>
+    </facets>
+    <layout expand="booksTable" spacing="true">
+        <filter id="bookFilter"
+                dataLoader="booksDl"
+                width="100%">
+            <actions>
+                <action id="resetFilterBtn" caption="msg://resetTagFilter" icon="font-awesome:ERASER"/>
+            </actions>
+            <properties include=".*"
+                        exclude="(owner)"
+                        excludeProperties="id,version"
+                        excludeRecursively="true"/>
+            <conditions>
+                <jpqlFilter parameterClass="com.github.gepi.libr.entity.Author" icon="LEAF" caption="По автору">
+                    <condition>
+                        <c:jpql>
+                            <c:join>inner join BookAuthors ba on e = ba.book</c:join>
+                            <c:where>ba.author.id = ? AND e.owner.id = :current_user_id </c:where>
+                        </c:jpql>
+                    </condition>
+                </jpqlFilter>
+
+                <jpqlFilter parameterClass="java.lang.String" icon="LEAF" caption="По имени автора">
+                    <condition>
+                        <c:jpql>
+                            <c:join>inner join BookAuthors bu on e = bu.book</c:join>
+                            <c:where>( bu.author.nameRu like ? OR bu.author.nameEn like ? ) AND e.owner.id = :current_user_id </c:where>
+                        </c:jpql>
+                    </condition>
+                </jpqlFilter>
+            </conditions>
+        </filter>
+        <dataGrid id="booksTable"
+                  width="100%"
+                  dataContainer="booksDc">
+            <actions>
+                <action id="create" type="create"/>
+                <action id="edit" type="edit"/>
+                <action id="remove" type="remove"/>
+            </actions>
+            <columns>
+                <column id="titleRu" property="titleRu"/>
+                <column id="titleEn" property="titleEn"/>
+                <column id="authors" property="bookAuthors" caption="msg://authors">
+                    <textRenderer/>
+                </column>
+                <column id="downloadLinks" caption="msg://downloadLinks">
+                </column>
+            </columns>
+            <simplePagination/>
+            <buttonsPanel id="buttonsPanel"
+                          alwaysVisible="true">
+                <button id="createBtn" action="booksTable.create" caption="msg://createBtn"/>
+                <button id="editBtn" action="booksTable.edit"/>
+                <button id="removeBtn" action="booksTable.remove"/>
+                <button id="allBook" caption="msg://resetTagFilter"/>
+            </buttonsPanel>
+        </dataGrid>
+    </layout>
+</fragment>
+
